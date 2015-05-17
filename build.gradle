@@ -1,0 +1,36 @@
+apply plugin :'java'
+
+sourceSets{
+    main.java.srcDir 'src/main/java'
+    test.java.srcDir 'src/main/java'
+}
+
+repositories{
+    mavenCentral()
+}
+
+configurations{
+    myConfig
+}
+
+
+dependencies{
+    compile 'org.apache.commons:commons-lang3:3.4'
+    compile 'junit:junit:4.12'
+    myConfig 'org.apache.commons:commons-lang3:3.4'
+}
+
+test {
+    useJUnit()
+}
+
+jar{
+    from configurations.myConfig.collect {zipTree it}
+    manifest.attributes 'Main-Class' : 'com.code.SwapCharCase'
+}
+
+task runJar(type : Exec,dependsOn : jar){
+    executable 'java'
+    args '-jar',"$jar.archivePath","$word"
+}
+
